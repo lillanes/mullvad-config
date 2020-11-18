@@ -1,0 +1,37 @@
+#! /bin/sh
+
+action=${1:-"default"}
+
+if [ ! -e /var/service/mullvad ]; then
+    echo "Mullvad service is unavailable..."
+    exit 1
+fi
+
+case $action in
+    auto)
+        if [ -e /var/service/mullvad/down ]; then
+            echo "Automatically connect to VPN on boot."
+            rm /var/service/mullvad/down
+        else
+            echo "Do not connect to VPN on boot."
+            touch /var/service/mullvad/down
+        fi
+        ;;
+    default)
+        [ -e /usr/share/mullvad/selected ] || echo "/etc/wireguard/mullvad-us161.conf" > /usr/share/mullvad/selected
+        ;;
+    off)
+        sv down mullvad
+        exit
+        ;;
+    *)
+        if [ ! -e "/etc/wireguard/mullvad-$action.conf" ]; then
+            echo "/etc/wireguard/mullvad-$action.conf not found";
+            exit 1
+        fi
+	echo "/etc/wireguard/mullvad-$action.conf" > /usr/share/mullvad/selected
+        ;;
+esac
+
+sv down mullvad
+sv up mullvad

@@ -1,0 +1,6 @@
+#! /bin/sh
+set -e
+
+conf=$(cat /usr/share/mullvad/selected)
+[ -e "$conf" ] && wg-quick up "$conf"
+exec chpst -b wireguard pause
