@@ -1,5 +1,7 @@
 #! /bin/sh
 set -e
 
-server=$(cat /var/lib/mullvad/selected)
-[ -e "/etc/wireguard/mullvad-$server.conf" ] && wg-quick down "mullvad-$server"
+for conf in /etc/wireguard/*.conf; do
+	[ -e "$conf" ] || continue;
+	wg-quick down "$conf"
+done
