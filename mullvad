@@ -11,7 +11,7 @@ fi
 get_best() {
     trap true INT
     printf "Will now ping all servers, this may take a while. Press '^C' to interrupt.\n"
-    ./mullvbest -q > /home/leon/tmp/bla
+    ./mullvbest -q > /var/lib/mullvad/selected
     trap - INT
 }
 
@@ -26,7 +26,7 @@ case $action in
         fi
         ;;
     default)
-        [ -r /usr/share/mullvad/selected ] || get_best
+        [ -r /var/lib/mullvad/selected ] || get_best
         ;;
     off)
         sv down mullvad
@@ -37,7 +37,7 @@ case $action in
             echo "/etc/wireguard/mullvad-$action.conf not found";
             exit 1
         fi
-        echo "mullvad-$action" > /usr/share/mullvad/selected
+        echo "mullvad-$action" > /var/lib/mullvad/selected
         ;;
 esac
 
