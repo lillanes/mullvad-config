@@ -1,7 +1,5 @@
 #! /bin/sh
 set -e
 
-for conf in /etc/wireguard/*.conf; do
-        [ -e "$conf" ] || continue;
-        wg-quick down "$conf"
-done
+conf=$(cat /usr/share/mullvad/selected)
+[ -e "$conf" ] && wg-quick down "$conf"
