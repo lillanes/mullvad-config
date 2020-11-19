@@ -40,12 +40,12 @@ trap report_and_exit INT
 
 for conf in /etc/wireguard/mullvad-*.conf; do
     [ -r "$conf" ] || continue
-    name=$(printf "$conf" | awk -F '[-.]' '{print $2}')
+    server=$(printf "$conf" | awk -F '[-.]' '{print $2}')
     address=$(awk -F '[ :]' 'END {print $3}' $conf)
-    [ -n "$quiet" ] || printf "pinging $name ($address)... "
+    [ -n "$quiet" ] || printf "pinging $server ($address)... "
     value=$(doping $address)
     [ -n "$quiet" ] || printf "$value\n"
-    [ $value -lt $best_value ] && best_value=$value && best=$name
+    [ $value -lt $best_value ] && best_value=$value && best=$server
 done
 
 report_and_exit

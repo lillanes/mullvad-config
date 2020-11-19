@@ -1,6 +1,6 @@
 #! /bin/sh
 set -e
 
-conf=$(cat /var/lib/mullvad/selected)
-[ -e "$conf" ] && wg-quick up "$conf"
+server=$(cat /var/lib/mullvad/selected)
+[ -e "/etc/wireguard/mullvad-$server.conf" ] && wg-quick up "mullvad-$server"
 exec chpst -b mullvad pause

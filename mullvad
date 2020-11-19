@@ -37,7 +37,7 @@ case $action in
             echo "/etc/wireguard/mullvad-$action.conf not found";
             exit 1
         fi
-        echo "mullvad-$action" > /var/lib/mullvad/selected
+        echo "$action" > /var/lib/mullvad/selected
         ;;
 esac
 
