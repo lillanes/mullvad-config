@@ -1,11 +1,19 @@
 #! /bin/sh
+set -e
 
 action=${1:-"default"}
 
 if [ ! -e /var/service/mullvad ]; then
-    echo "Mullvad service is unavailable..."
+    echo "Mullvad service is unavailable."
     exit 1
 fi
+
+get_best() {
+    trap true INT
+    printf "Will now ping all servers, this may take a while. Press '^C' to interrupt.\n"
+    ./mullvbest -q > /home/leon/tmp/bla
+    trap - INT
+}
 
 case $action in
     auto)
@@ -18,7 +26,7 @@ case $action in
         fi
         ;;
     default)
-        [ -e /usr/share/mullvad/selected ] || echo "/etc/wireguard/mullvad-us161.conf" > /usr/share/mullvad/selected
+        [ -r /usr/share/mullvad/selected ] || get_best
         ;;
     off)
         sv down mullvad
@@ -29,7 +37,7 @@ case $action in
             echo "/etc/wireguard/mullvad-$action.conf not found";
             exit 1
         fi
-	echo "/etc/wireguard/mullvad-$action.conf" > /usr/share/mullvad/selected
+        echo "mullvad-$action" > /usr/share/mullvad/selected
         ;;
 esac
 

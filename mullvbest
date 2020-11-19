@@ -1,0 +1,51 @@
+#! /bin/sh
+
+print_usage() {
+    printf "Usage: mullvbest [-q]\n"
+}
+
+while getopts 'q' flag; do
+    case $flag in
+        q)
+            quiet='true'
+            ;;
+        *)
+            print_usage
+            exit 1
+            ;;
+    esac
+done
+
+best=""
+best_value=5000000
+
+doping() {
+    ping -qw 4 $1 | awk -F '/' 'END {sub(/\./,"",$5);print $5}'
+}
+
+report_and_exit() {
+    if [ -z "$best" ]; then
+        printf "fail: no results!\n" >&2
+        exit 1
+    fi
+    if [ -n "$quiet" ]; then
+        printf "$best\n"
+    else
+        printf "\nThe best result was $best ($best_value).\n"
+    fi
+    exit 0
+}
+
+trap report_and_exit INT
+
+for conf in /etc/wireguard/mullvad-*.conf; do
+    [ -r "$conf" ] || continue
+    name=$(printf "$conf" | awk -F '[-.]' '{print $2}')
+    address=$(awk -F '[ :]' 'END {print $3}' $conf)
+    [ -n "$quiet" ] || printf "pinging $name ($address)... "
+    value=$(doping $address)
+    [ -n "$quiet" ] || printf "$value\n"
+    [ $value -lt $best_value ] && best_value=$value && best=$name
+done
+
+report_and_exit
