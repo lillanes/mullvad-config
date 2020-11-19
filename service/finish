@@ -1,7 +1,7 @@
 #! /bin/sh
-set -e
 
-for conf in /etc/wireguard/*.conf; do
-	[ -e "$conf" ] || continue;
-	wg-quick down "$conf"
+servers=$(ip -brief link | grep -oP 'mullvad-\K\S+')
+for server in $servers; do
+	[ -e "/etc/wireguard/mullvad-$server.conf" ] || continue;
+	wg-quick down mullvad-$server
 done
