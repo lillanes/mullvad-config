@@ -3,4 +3,4 @@ set -e
 
 conf=$(cat /var/lib/mullvad/selected)
 [ -e "$conf" ] && wg-quick up "$conf"
-exec chpst -b wireguard pause
+exec chpst -b mullvad pause
