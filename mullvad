@@ -11,7 +11,7 @@ fi
 get_best() {
     trap true INT
     printf "Will now ping all servers, this may take a while. Press '^C' to interrupt.\n"
-    ./mullvbest -q > /var/lib/mullvad/selected
+    mullvbest -q > /var/lib/mullvad/selected
     trap - INT
 }
 
