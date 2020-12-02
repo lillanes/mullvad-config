@@ -32,6 +32,12 @@ case $action in
         sv down mullvad
         exit
         ;;
+    check)
+        curl https://am.i.mullvad.net/connected
+        curl https://am.i.mullvad.net/city
+        curl https://am.i.mullvad.net/country
+        exit
+        ;;
     *)
         if [ ! -e "/etc/wireguard/mullvad-$action.conf" ]; then
             echo "/etc/wireguard/mullvad-$action.conf not found";
