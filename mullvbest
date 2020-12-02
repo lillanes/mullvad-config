@@ -1,13 +1,19 @@
 #! /bin/sh
 
 print_usage() {
-    printf "Usage: mullvbest [-q]\n"
+    printf "Usage: mullvbest [-q] [-f FILTER]\n"
 }
 
-while getopts 'q' flag; do
+filter=""
+
+while getopts 'qf:' flag; do
     case $flag in
         q)
             quiet='true'
+            ;;
+        f)
+            echo "filtering $OPTARG"
+            filter=${OPTARG}
             ;;
         *)
             print_usage
@@ -38,7 +44,7 @@ report_and_exit() {
 
 trap report_and_exit INT
 
-for conf in /etc/wireguard/mullvad-*.conf; do
+for conf in /etc/wireguard/mullvad-$filter*.conf; do
     [ -r "$conf" ] || continue
     server=$(printf "$conf" | awk -F '[-.]' '{print $2}')
     address=$(awk -F '[ :]' 'END {print $3}' $conf)
